@@ -1,19 +1,76 @@
 local Players = game:GetService("Players")
+
 local CurrentEvent = nil
 local AppliedEvents = {} -- Store applied events
-local GUI4, GUI5
 
--- Define the changeFriction function
 local function changeFriction(part, friction, frictionWeight)
 	if not part.CustomPhysicalProperties then
 		part.CustomPhysicalProperties = PhysicalProperties.new(part.Material)
 	end
 	local orig = part.CustomPhysicalProperties
-	friction = friction or orig.Friction
-	frictionWeight = frictionWeight or orig.FrictionWeight
-	part.CustomPhysicalProperties = PhysicalProperties.new(orig.Density, friction, orig.Elasticity, frictionWeight, orig.ElasticityWeight)
+	part.CustomPhysicalProperties = PhysicalProperties.new(orig.Density, friction or orig.Friction, orig.Elasticity, frictionWeight or orig.FrictionWeight, orig.ElasticityWeight)
 end
-local GameEvents = {
+
+local function ApplyEvent(event, player)
+	local character = player.Character
+	if character then
+		event.effect(character)
+	end
+end
+
+local function ChangeEvents()
+	local newEvent = CurrentEvent
+	while newEvent == CurrentEvent do
+		newEvent = GameEvents[math.random(1, #GameEvents)]
+	end
+
+	if CurrentEvent then
+		local appliedEvent = AppliedEvents[CurrentEvent.name]
+		if appliedEvent and appliedEvent.reset then
+			appliedEvent.reset()
+		end
+	end
+
+	CurrentEvent = newEvent
+	for _, player in pairs(Players:GetPlayers()) do
+		local playerName = player.Name
+		AppliedEvents[playerName] = { reset = function() end } -- Initialize with an empty reset function
+		ApplyEvent(CurrentEvent, player)
+	end
+end
+
+Players.PlayerAdded:Connect(function(player)
+	player.CharacterAdded:Connect(function(character)
+		local PGUI = player:WaitForChild("PlayerGui")
+		local SGUI = PGUI:WaitForChild("CURRENTEVENT")
+		local GUI1 = SGUI:WaitForChild("F1")
+		local GUI2 = GUI1:WaitForChild("F2")
+		local GUI3 = GUI2:WaitForChild("Content")
+		local GUI4 = GUI3:WaitForChild("TextLabel")
+		local GUI5 = GUI3:WaitForChild("TextLabelStroke")
+		local playerName = player.Name
+		if CurrentEvent then
+			AppliedEvents[playerName] = { reset = function() end } -- Initialize with an empty reset function
+			ApplyEvent(CurrentEvent, player)
+		end
+	end)
+end)
+
+local function Timer(player)
+	GUI4 = Instance.new("TextLabel")
+	GUI5 = Instance.new("TextLabel")
+
+	while true do
+		wait(CurrentEvent.duration)
+		ChangeEvents()
+		print(CurrentEvent.name .. " and " .. CurrentEvent.duration)
+		GUI4.Text = "CURRENT EVENT: " .. CurrentEvent.name
+		GUI5.Text = "CURRENT EVENT: " .. CurrentEvent.name
+		print(AppliedEvents)
+	end
+end
+
+GameEvents = {
 	{
 		name = "Extra Walkspeed",
 		duration = 15,
@@ -53,7 +110,7 @@ local GameEvents = {
 			for _, mainmapfolder in pairs(workspace.Map:GetChildren()) do
 				if mainmapfolder:IsA("Folder") and mainmapfolder.Name == "MainMap" then
 					for _, parts in pairs(mainmapfolder:GetChildren()) do
-						if parts:IsA("BasePart") then
+						if parts:IsA("BasePart") or parts:IsA("MeshPart") then
 							changeFriction(parts, 0, 100)
 						end
 					end
@@ -93,11 +150,21 @@ local GameEvents = {
 
 				for _, leg in pairs(legs) do
 					if leg then
-						leg:Destroy()
+					leg:Destroy()
+					
+					AppliedEvents["Lose Your Legs"] = {
+						reset = function()
+							print("Reset")
+						end,
+					}
+			
 					end
 				end
-			end
+		end
+		
+
 	},
+	
 	{
 		name = "Lose Your Arms",
 		duration = 0.5,
@@ -115,7 +182,12 @@ local GameEvents = {
 
 				for _, arm in pairs(arms) do
 					if arm then
-						arm:Destroy()
+					arm:Destroy()
+					AppliedEvents["Lose Your Arms"] = {
+						reset = function()
+							print("Reset")
+						end,
+					}
 					end
 				end
 			end
@@ -166,7 +238,12 @@ local GameEvents = {
 							bodyparts.BrickColor = BrickColor.new("Institutional white")
 						elseif bodyparts:IsA("Accessory") then
 							bodyparts:Destroy()
-							humanoid:FindFirstChild("HeadScale").Value = 2
+						humanoid:FindFirstChild("HeadScale").Value = 2
+						AppliedEvents["Skibi Toilet"] = {
+							reset = function()
+								print("Reset")
+							end,
+						}
 						end
 					end
 				end
@@ -199,6 +276,11 @@ local GameEvents = {
 		effect = function(character)
 			local hum = character:FindFirstChild("Humanoid")
 			hum.Health = 0
+			AppliedEvents["Death"] = {
+				reset = function()
+					print("Reset")
+				end,
+			}
 		end
 	},
 	{
@@ -215,6 +297,11 @@ local GameEvents = {
 				Explosion.Parent = Parent
 
 				makeExplosion(60, Enum.ExplosionType.NoCraters, Torso.Position, character)
+				AppliedEvents["Explode"] = {
+					reset = function()
+						print("Reset")
+					end,
+				}
 			end
 		end
 	},
@@ -347,64 +434,6 @@ local GameEvents = {
 		end
 	},
 }
-
-local function ApplyEvent(event, player)
-	print("Applying event: " .. event.name)
-	local character = player.Character
-	if character then
-		event.effect(character)
-	end
-end
-
-local function ChangeEvents()
-	local newEvent = CurrentEvent
-	while newEvent == CurrentEvent do
-		newEvent = GameEvents[math.random(1, #GameEvents)]
-	end
-
-	if CurrentEvent then
-		local appliedEvent = AppliedEvents[CurrentEvent.name]
-		if appliedEvent and appliedEvent.reset then
-			appliedEvent.reset()
-		end
-	end
-
-	CurrentEvent = newEvent
-	for _, player in pairs(Players:GetPlayers()) do
-		local playerName = player.Name
-		AppliedEvents[playerName] = { reset = function() end } -- Initialize with an empty reset function
-		ApplyEvent(CurrentEvent, player)
-	end
-end
-
-Players.PlayerAdded:Connect(function(player)
-	player.CharacterAdded:Connect(function(character)
-		local PGUI = player:WaitForChild("PlayerGui")
-		local SGUI = PGUI:WaitForChild("CURRENTEVENT")
-		local GUI1 = SGUI:WaitForChild("F1")
-		local GUI2 = GUI1:WaitForChild("F2")
-		local GUI3 = GUI2:WaitForChild("Content")
-		GUI4 = GUI3:WaitForChild("TextLabel")
-		GUI5 = GUI3:WaitForChild("TextLabelStroke")
-
-		local playerName = player.Name
-		if CurrentEvent then
-			AppliedEvents[playerName] = { reset = function() end } -- Initialize with an empty reset function
-			ApplyEvent(CurrentEvent, player)
-		end
-	end)
-end)
-
-local function Timer(player)
-	while true do
-		wait(CurrentEvent.duration)
-		ChangeEvents()
-		print(CurrentEvent.name.. " and " ..CurrentEvent.duration)
-		GUI4.Text = "CURRENT EVENT: " ..CurrentEvent.name
-		GUI5.Text = "CURRENT EVENT: " ..CurrentEvent.name
-		print(AppliedEvents)
-	end
-end
 
 ChangeEvents()
 Timer()
