@@ -101,9 +101,9 @@ local GameEvents = {
 					character:FindFirstChild("RightLowerLeg"),
 					character:FindFirstChild("RightFoot")
 				}
-				
+
 				hum.HipHeight = 0.4
-				
+
 				for _, leg in pairs(legs) do
 					if leg then
 						leg:Destroy()
@@ -130,22 +130,22 @@ local GameEvents = {
 				end
 			elseif humtyp == Enum.HumanoidRigType.R15 then
 				print(humtyp)
- 			local arms = {
-                character:FindFirstChild("LeftUpperArm"),
-                character:FindFirstChild("LeftLowerArm"),
-                character:FindFirstChild("LeftHand"),
-                character:FindFirstChild("RightUpperArm"),
-                character:FindFirstChild("RightLowerArm"),
-                character:FindFirstChild("RightHand")
-            }
+				local arms = {
+					character:FindFirstChild("LeftUpperArm"),
+					character:FindFirstChild("LeftLowerArm"),
+					character:FindFirstChild("LeftHand"),
+					character:FindFirstChild("RightUpperArm"),
+					character:FindFirstChild("RightLowerArm"),
+					character:FindFirstChild("RightHand")
+				}
 
-            for _, arm in pairs(arms) do
-                if arm then
-                    arm:Destroy()
-                end
-            end
-        end
-    end
+				for _, arm in pairs(arms) do
+					if arm then
+						arm:Destroy()
+					end
+				end
+			end
+		end
 	},
 	{
 		name = "Extra JumpPower",
@@ -164,11 +164,10 @@ local GameEvents = {
 			end
 		end
 	},
-    {
-		
+	{
 		name = "Skibi Toilet",
-        duration = 15,
-        effect = function(character)
+		duration = 15,
+		effect = function(character)
 			local SkibiMAIN = game:GetService("ServerStorage"):FindFirstChild("SKIBI")
 
 			local function createWeld(Parent, Part0, Part1, C0, C1)
@@ -180,51 +179,67 @@ local GameEvents = {
 				M6D.C1 = C1 or CFrame.new(0, 0, 0)
 				Part1.Position = Part0.Position
 			end
-
 			local SkibiClone = SkibiMAIN:Clone()
+			SkibiClone.Parent = character
+			SkibiClone.Name = "SkibiClone"
 			local humtyp = character:FindFirstChild("Humanoid").RigType
 			if humtyp == Enum.HumanoidRigType.R6 then
-			local R6Torso = character:FindFirstChild("Torso")
-			createWeld(R6Torso, R6Torso, SkibiClone)
+				local R6Torso = character:FindFirstChild("Torso")
+				createWeld(R6Torso, R6Torso, SkibiClone)
+				print("made weld")
 			elseif humtyp == Enum.HumanoidRigType.R15 then
-			local R15Torso = character:FindFirstChild("UpperTorso")
-			createWeld(R15Torso, R15Torso, SkibiClone)
+				local R15Torso = character:FindFirstChild("UpperTorso")
+				createWeld(R15Torso, R15Torso, SkibiClone)
+				print("mde weld")
+				local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+				if humanoid then
+					for _, bodyparts in pairs(character:GetChildren()) do
+						if bodyparts:IsA("Part") or bodyparts:IsA("MeshPart") and bodyparts.Name ~= "Head" then
+							bodyparts.BrickColor = BrickColor.new("Institutional white")
+						elseif bodyparts:IsA("Accessory") then
+							bodyparts:Destroy()
+							humanoid:FindFirstChild("HeadScale").Value = 2
+						end
+					end
+				end
 			end
 		end
+		
+		
 	},
-    {
-        name = "Fogginess",
-        duration = 15,
-        effect = function(character)
-            local lighting = game:GetService("Lighting")
-            local originalFogEnd = lighting.FogEnd
-            local originalFogStart = lighting.FogStart
-            lighting.FogEnd = 25
-            lighting.FogStart = 0
-            AppliedEvents["Fogginess"] = {
-                reset = function()
-                    lighting.FogEnd = originalFogEnd
-                    lighting.FogStart = originalFogStart
-                end
-            }
-            
-        end
-    },
-    {
-        name = "Take a Chill Pill",
-        duration = 15,
-        effect = function(character)
-            local hum = character:FindFirstChildOfClass("Humanoid")
-            local originalWalkSpeed = hum.WalkSpeed
-            hum.WalkSpeed = -10
-            AppliedEvents["Take a Chill Pill"] = {
-                reset = function()
-                    hum.WalkSpeed = originalWalkSpeed
-                end
-            }
-            
-        end
-    },
+	{
+		name = "Fogginess",
+		duration = 15,
+		effect = function(character)
+			local lighting = game:GetService("Lighting")
+			local originalFogEnd = lighting.FogEnd
+			local originalFogStart = lighting.FogStart
+			lighting.FogEnd = 25
+			lighting.FogStart = 0
+			AppliedEvents["Fogginess"] = {
+				reset = function()
+					lighting.FogEnd = originalFogEnd
+					lighting.FogStart = originalFogStart
+				end
+			}
+
+		end
+	},
+	{
+		name = "Take a Chill Pill",
+		duration = 15,
+		effect = function(character)
+			local hum = character:FindFirstChildOfClass("Humanoid")
+			local originalWalkSpeed = hum.WalkSpeed
+			hum.WalkSpeed = -10
+			AppliedEvents["Take a Chill Pill"] = {
+				reset = function()
+					hum.WalkSpeed = originalWalkSpeed
+				end
+			}
+
+		end
+	},
 	{
 		name = "Forced First Person",
 		duration = 15,
@@ -238,21 +253,21 @@ local GameEvents = {
 			}
 		end
 	},
-    {
-        name = "Color Blindness",
-        duration = 15,
-        effect = function(character)
-            local lighting = game:GetService("Lighting")
-            local CCE = lighting:FindFirstChild("ColorCorrection")
-            local originalSaturation = CCE.Saturation
-            CCE.Saturation = -1
-            AppliedEvents["Color Blindness"] = {
-                reset = function()
-                    CCE.Saturation = originalSaturation
-                end
-            }
-        end
-    },
+	{
+		name = "Color Blindness",
+		duration = 15,
+		effect = function(character)
+			local lighting = game:GetService("Lighting")
+			local CCE = lighting:FindFirstChild("ColorCorrection")
+			local originalSaturation = CCE.Saturation
+			CCE.Saturation = -1
+			AppliedEvents["Color Blindness"] = {
+				reset = function()
+					CCE.Saturation = originalSaturation
+				end
+			}
+		end
+	},
 	{
 		name = "Less JumpPower",
 		duration = 15,
@@ -290,14 +305,14 @@ local GameEvents = {
 		name = "Low Gravity",
 		duration = 15,
 		effect = function(character)
-		local originalGravity = workspace.Gravity
-		workspace.Gravity = 10
-		AppliedEvents["Low Gravity"] = {
-			reset = function()
-				workspace.Gravity = originalGravity
+			local originalGravity = workspace.Gravity
+			workspace.Gravity = 10
+			AppliedEvents["Low Gravity"] = {
+				reset = function()
+					workspace.Gravity = originalGravity
 				end
-				}
-			end
+			}
+		end
 	},
 	{
 		name = "Big Character",
@@ -324,34 +339,34 @@ local GameEvents = {
 					end
 				}
 			end
-        end
-},
-{
-	name = "Small Character",
-	duration = 20,
-	effect = function(character)
-		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-		if humanoid then
-			local originalBodyHeightScale = humanoid:FindFirstChild("BodyHeightScale").Value
-			local originalBodyWidthScale = humanoid:FindFirstChild("BodyWidthScale").Value
-			local originalBodyDepthScale = humanoid:FindFirstChild("BodyDepthScale").Value
-			local originalHeadScale = humanoid:FindFirstChild("HeadScale").Value
-
-			humanoid:FindFirstChild("BodyHeightScale").Value = 0.3
-			humanoid:FindFirstChild("BodyWidthScale").Value = 0.3
-			humanoid:FindFirstChild("BodyDepthScale").Value = 0.3
-			humanoid:FindFirstChild("HeadScale").Value = 0.3
-
-			AppliedEvents["Small Character"] = {
-				reset = function()
-					humanoid:FindFirstChild("BodyHeightScale").Value = originalBodyHeightScale
-					humanoid:FindFirstChild("BodyWidthScale").Value = originalBodyWidthScale
-					humanoid:FindFirstChild("BodyDepthScale").Value = originalBodyDepthScale
-					humanoid:FindFirstChild("HeadScale").Value = originalHeadScale
-				end
-			}
 		end
-	end
+	},
+	{
+		name = "Small Character",
+		duration = 20,
+		effect = function(character)
+			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+			if humanoid then
+				local originalBodyHeightScale = humanoid:FindFirstChild("BodyHeightScale").Value
+				local originalBodyWidthScale = humanoid:FindFirstChild("BodyWidthScale").Value
+				local originalBodyDepthScale = humanoid:FindFirstChild("BodyDepthScale").Value
+				local originalHeadScale = humanoid:FindFirstChild("HeadScale").Value
+
+				humanoid:FindFirstChild("BodyHeightScale").Value = 0.3
+				humanoid:FindFirstChild("BodyWidthScale").Value = 0.3
+				humanoid:FindFirstChild("BodyDepthScale").Value = 0.3
+				humanoid:FindFirstChild("HeadScale").Value = 0.3
+
+				AppliedEvents["Small Character"] = {
+					reset = function()
+						humanoid:FindFirstChild("BodyHeightScale").Value = originalBodyHeightScale
+						humanoid:FindFirstChild("BodyWidthScale").Value = originalBodyWidthScale
+						humanoid:FindFirstChild("BodyDepthScale").Value = originalBodyDepthScale
+						humanoid:FindFirstChild("HeadScale").Value = originalHeadScale
+					end
+				}
+			end
+		end
 	},
 }
 
@@ -386,13 +401,13 @@ end
 
 Players.PlayerAdded:Connect(function(player)
 	player.CharacterAdded:Connect(function(character)
-        local PGUI = player.PlayerGui
-        local SGUI = PGUI:WaitForChild("CURRENTEVENT")
-        local GUI1 = SGUI:FindFirstChild("F1")
-        local GUI2 = GUI1:FindFirstChild("F2")
-        local GUI3 = GUI2:FindFirstChild("Content")
-        GUI4 = GUI3:WaitForChild("TextLabel")
-        GUI5 = GUI3:WaitForChild("TextLabelStroke")
+		local PGUI = player.PlayerGui
+		local SGUI = PGUI:WaitForChild("CURRENTEVENT")
+		local GUI1 = SGUI:FindFirstChild("F1")
+		local GUI2 = GUI1:FindFirstChild("F2")
+		local GUI3 = GUI2:FindFirstChild("Content")
+		GUI4 = GUI3:WaitForChild("TextLabel")
+		GUI5 = GUI3:WaitForChild("TextLabelStroke")
 
 		local playerName = player.Name
 		if CurrentEvent then
@@ -407,9 +422,9 @@ local function Timer()
 		wait(CurrentEvent.duration)
 		ChangeEvents()
 		print(CurrentEvent.name.. " and " ..CurrentEvent.duration)
-        GUI4.Text = "CURRENT EVENT: " ..CurrentEvent.name
-        GUI5.Text = "CURRENT EVENT: " ..CurrentEvent.name
-		
+		GUI4.Text = "CURRENT EVENT: " ..CurrentEvent.name
+		GUI5.Text = "CURRENT EVENT: " ..CurrentEvent.name
+
 		print(AppliedEvents)
 	end
 end
