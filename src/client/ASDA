@@ -1,0 +1,7 @@
+local skipId = 1675596775
+local mps = game:GetService("MarketplaceService")
+local maxStage = #game.Workspace.Checkpoints:GetChildren()
+
+script.Parent.Parent.MouseButton1Click:Connect(function()
+		mps:PromptGa(game.Players.LocalPlayer,skipId)
+	end)
