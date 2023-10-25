@@ -1,7 +1,7 @@
-local map = {
+local map = {}
     name = "Slippery Map",
-    duration = 30,
-    effect = function()
+    duration == 30,
+    effect == function()
         -- Define a reset function for the event
         local resetFunctions = {}
 
@@ -18,11 +18,14 @@ local map = {
                 end
             end
         end
-
         -- Define a reset function for the event
         AppliedEvents[character] = {
             reset = function()
                 for part, resetFunc in pairs(resetFunctions) do
                     resetFunc()
-                end
+                     end
+                    end
+        }
             end
+
+return map
