@@ -194,18 +194,22 @@ local GameEvents = {
 		end
 	},
 	{
-		name = "Take a Chill Pill",
-		duration = 15,
+		name = "Death",
+		duration = 0.5,
 		effect = function(character)
-			local hum = character:FindFirstChildOfClass("Humanoid")
-			local originalWalkSpeed = hum.WalkSpeed
-			hum.WalkSpeed = -10
-			AppliedEvents["Take a Chill Pill"] = {
-				reset = function()
-					hum.WalkSpeed = originalWalkSpeed
-				end
-			}
+			local hum = character:FindFirstChild("Humanoid")
+			hum.Health = 0
+		end
+	},
+	{
+		name = "Explosion",
+		duration = 0.5,
+		effect = function(character)
+			local Torso = character:FindFirstChild("Upper Torso")
+			local function makeExplosion(BlastRadius, ExplosionType, Position, Parent)
+				makeExplosion(60, Enum.ExplosionType.NoCraters, Torso.Position, character)
 
+			end
 		end
 	},
 	{
