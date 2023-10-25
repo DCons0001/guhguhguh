@@ -1,6 +1,6 @@
 local players = game:GetService("Players")
 
-players.PlayerAdded:Connect(function(plr)
+players.PlayerAdded:Connect(function()
 	local RS = game:GetService("ReplicatedStorage")
 	local event = RS.RESPAWN
 

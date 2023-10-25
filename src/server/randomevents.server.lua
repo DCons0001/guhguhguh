@@ -181,25 +181,15 @@ local GameEvents = {
 			end
 			local Skibi = game:GetService("ServerStorage"):FindFirstChild("SKIBI")
 
-			local humtyp = character:FindFirstChild("Humanoid").HumanoidRigType
+			local humtyp = character:FindFirstChild("Humanoid").RigType
 			if humtyp == Enum.HumanoidRigType.R6 then
 			local R6Torso = character:FindFirstChild("Torso")
 			createWeld(R6Torso, R6Torso, Skibi)
 			elseif humtyp == Enum.HumanoidRigType.R15 then
 			local R15Torso = character:FindFirstChild("UpperTorso")
 			createWeld(R15Torso, R15Torso, Skibi)
-
-            local Torso = character:FindFirstChild("Torso")
-            Skibi:Clone().Parent = Torso
-            local M6D = Instance.new("Motor6D")
-            M6D.Parent = Torso
-            M6D.Part0 = Torso
-            M6D.Part1 = Skibi
-            M6D.C0 = CFrame.new(0, 0, 0)
-            M6D.C1 = CFrame.new(0, 0, 0)
-            Skibi.Position = Torso.Position
 			end
-        end
+		end
 	},
     {
         name = "Fogginess",
@@ -234,6 +224,18 @@ local GameEvents = {
             
         end
     },
+	{
+		name = "Forced First Person",
+		duration = 15,
+		effect = function(player)
+			player.CameraMode = Enum.CameraMode.LockFirstPerson
+			AppliedEvents["Forced First Person"] = {
+				reset = function()
+					player.CameraMode = Enum.CameraMode.Classic
+				end
+			}
+		end
+	},
     {
         name = "Color Blindness",
         duration = 15,
@@ -358,8 +360,8 @@ Players.PlayerAdded:Connect(function(player)
         local GUI1 = SGUI:FindFirstChild("F1")
         local GUI2 = GUI1:FindFirstChild("F2")
         local GUI3 = GUI2:FindFirstChild("Content")
-        _G.GUI4 = GUI3:WaitForChild("TextLabel")
-        _G.GUI5 = GUI3:WaitForChild("TextLabelStroke")
+        GUI4 = GUI3:WaitForChild("TextLabel")
+        GUI5 = GUI3:WaitForChild("TextLabelStroke")
 
 		local playerName = player.Name
 		if CurrentEvent then
