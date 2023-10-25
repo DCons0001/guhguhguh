@@ -169,7 +169,8 @@ local GameEvents = {
 		name = "Skibi Toilet",
         duration = 15,
         effect = function(character)
-			
+			local SkibiMAIN = game:GetService("ServerStorage"):FindFirstChild("SKIBI")
+
 			local function createWeld(Parent, Part0, Part1, C0, C1)
 				local M6D = Instance.new("Motor6D")
 				M6D.Parent = Parent
@@ -179,15 +180,15 @@ local GameEvents = {
 				M6D.C1 = C1 or CFrame.new(0, 0, 0)
 				Part1.Position = Part0.Position
 			end
-			local Skibi = game:GetService("ServerStorage"):FindFirstChild("SKIBI")
 
+			local SkibiClone = SkibiMAIN:Clone()
 			local humtyp = character:FindFirstChild("Humanoid").RigType
 			if humtyp == Enum.HumanoidRigType.R6 then
 			local R6Torso = character:FindFirstChild("Torso")
-			createWeld(R6Torso, R6Torso, Skibi)
+			createWeld(R6Torso, R6Torso, SkibiClone)
 			elseif humtyp == Enum.HumanoidRigType.R15 then
 			local R15Torso = character:FindFirstChild("UpperTorso")
-			createWeld(R15Torso, R15Torso, Skibi)
+			createWeld(R15Torso, R15Torso, SkibiClone)
 			end
 		end
 	},
@@ -227,7 +228,8 @@ local GameEvents = {
 	{
 		name = "Forced First Person",
 		duration = 15,
-		effect = function(player)
+		effect = function(character)
+			local player = game:GetService("Players"):GetPlayerFromCharacter(character)
 			player.CameraMode = Enum.CameraMode.LockFirstPerson
 			AppliedEvents["Forced First Person"] = {
 				reset = function()
