@@ -80,19 +80,6 @@ local GameEvents = {
 		duration = 0.5,
 		effect = function(character)
 			local hum = character:FindFirstChild("Humanoid")
-			local humtyp = hum.RigType
-
-			if humtyp == Enum.HumanoidRigType.R6 then
-				print(humtyp)
-				local legs = {character:FindFirstChild("Left Leg"), character:FindFirstChild("Right Leg")}
-
-				for _, leg in pairs(legs) do
-					if leg then
-						leg:Destroy()
-					end
-				end
-			elseif humtyp == Enum.HumanoidRigType.R15 then
-				print(humtyp)
 				local legs = {
 					character:FindFirstChild("LeftUpperLeg"),
 					character:FindFirstChild("LeftLowerLeg"),
@@ -110,26 +97,13 @@ local GameEvents = {
 					end
 				end
 			end
-		end
 	},
 	{
 		name = "Lose Your Arms",
 		duration = 0.5,
 		effect = function(character)
 			local hum = character:FindFirstChild("Humanoid")
-			local humtyp = hum.RigType
 
-			if humtyp == Enum.HumanoidRigType.R6 then
-				print(humtyp)
-				local arms = {character:FindFirstChild("Left Arm"), character:FindFirstChild("Right Arm")}
-
-				for _, arm in pairs(arms) do
-					if arm then
-						arm:Destroy()
-					end
-				end
-			elseif humtyp == Enum.HumanoidRigType.R15 then
-				print(humtyp)
 				local arms = {
 					character:FindFirstChild("LeftUpperArm"),
 					character:FindFirstChild("LeftLowerArm"),
@@ -145,7 +119,7 @@ local GameEvents = {
 					end
 				end
 			end
-		end
+	
 	},
 	{
 		name = "Extra JumpPower",
@@ -182,12 +156,6 @@ local GameEvents = {
 			local SkibiClone = SkibiMAIN:Clone()
 			SkibiClone.Parent = character
 			SkibiClone.Name = "SkibiClone"
-			local humtyp = character:FindFirstChild("Humanoid").RigType
-			if humtyp == Enum.HumanoidRigType.R6 then
-				local R6Torso = character:FindFirstChild("Torso")
-				createWeld(R6Torso, R6Torso, SkibiClone)
-				print("made weld")
-			elseif humtyp == Enum.HumanoidRigType.R15 then
 				local R15Torso = character:FindFirstChild("UpperTorso")
 				createWeld(R15Torso, R15Torso, SkibiClone)
 				print("mde weld")
@@ -203,9 +171,9 @@ local GameEvents = {
 					end
 				end
 			end
-		end
-		
-		
+	
+
+
 	},
 	{
 		name = "Fogginess",
@@ -417,15 +385,24 @@ Players.PlayerAdded:Connect(function(player)
 	end)
 end)
 
-local function Timer()
+local function Timer(player)
+	
+	while not player do
+		do wait()
+			
 	while true do
 		wait(CurrentEvent.duration)
 		ChangeEvents()
-		print(CurrentEvent.name.. " and " ..CurrentEvent.duration)
-		GUI4.Text = "CURRENT EVENT: " ..CurrentEvent.name
-		GUI5.Text = "CURRENT EVENT: " ..CurrentEvent.name
 
-		print(AppliedEvents)
+		
+
+				print(CurrentEvent.name.. " and " ..CurrentEvent.duration)
+				GUI4.Text = "CURRENT EVENT: " ..CurrentEvent.name
+				GUI5.Text = "CURRENT EVENT: " ..CurrentEvent.name
+
+				print(AppliedEvents)
+			end
+		end
 	end
 end
 
