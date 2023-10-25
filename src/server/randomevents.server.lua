@@ -1,6 +1,7 @@
 local Players = game:GetService("Players")
 local CurrentEvent = nil
 local AppliedEvents = {} -- Store applied events
+local GUI4, GUI5
 
 -- Define the changeFriction function
 local function changeFriction(part, friction, frictionWeight)
@@ -12,7 +13,6 @@ local function changeFriction(part, friction, frictionWeight)
 	frictionWeight = frictionWeight or orig.FrictionWeight
 	part.CustomPhysicalProperties = PhysicalProperties.new(orig.Density, friction, orig.Elasticity, frictionWeight, orig.ElasticityWeight)
 end
-
 local GameEvents = {
 	{
 		name = "Extra Walkspeed",
@@ -202,13 +202,19 @@ local GameEvents = {
 		end
 	},
 	{
-		name = "Explosion",
+		name = "Explode",
 		duration = 0.5,
 		effect = function(character)
 			local Torso = character:FindFirstChild("Upper Torso")
 			local function makeExplosion(BlastRadius, ExplosionType, Position, Parent)
 				makeExplosion(60, Enum.ExplosionType.NoCraters, Torso.Position, character)
+				local Explosion = Instance.new("Explosion")
+				Explosion.BlastRadius = BlastRadius
+				Explosion.ExplosionType = ExplosionType
+				Explosion.Position = Position
+				Explosion.Parent = Parent
 
+				makeExplosion(60, Enum.ExplosionType.NoCraters, Torso.Position, character)
 			end
 		end
 	},
@@ -373,11 +379,11 @@ end
 
 Players.PlayerAdded:Connect(function(player)
 	player.CharacterAdded:Connect(function(character)
-		local PGUI = player.PlayerGui
+		local PGUI = player:WaitForChild("PlayerGui")
 		local SGUI = PGUI:WaitForChild("CURRENTEVENT")
-		local GUI1 = SGUI:FindFirstChild("F1")
-		local GUI2 = GUI1:FindFirstChild("F2")
-		local GUI3 = GUI2:FindFirstChild("Content")
+		local GUI1 = SGUI:WaitForChild("F1")
+		local GUI2 = GUI1:WaitForChild("F2")
+		local GUI3 = GUI2:WaitForChild("Content")
 		GUI4 = GUI3:WaitForChild("TextLabel")
 		GUI5 = GUI3:WaitForChild("TextLabelStroke")
 
@@ -390,25 +396,15 @@ Players.PlayerAdded:Connect(function(player)
 end)
 
 local function Timer(player)
-	
-	while not player do
-		do wait()
-			
 	while true do
 		wait(CurrentEvent.duration)
 		ChangeEvents()
-
-		
-
-				print(CurrentEvent.name.. " and " ..CurrentEvent.duration)
-				GUI4.Text = "CURRENT EVENT: " ..CurrentEvent.name
-				GUI5.Text = "CURRENT EVENT: " ..CurrentEvent.name
-
-				print(AppliedEvents)
-			end
-		end
+		print(CurrentEvent.name.. " and " ..CurrentEvent.duration)
+		GUI4.Text = "CURRENT EVENT: " ..CurrentEvent.name
+		GUI5.Text = "CURRENT EVENT: " ..CurrentEvent.name
+		print(AppliedEvents)
 	end
 end
 
 ChangeEvents()
-Timer() 
+Timer()
