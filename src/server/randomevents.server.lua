@@ -269,6 +269,35 @@ local GameEvents = {
 		end
 	},
 	{
+		name = "No Jumping",
+		duration = 15,
+		effect = function(character)
+			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+			if humanoid then
+				local originalJumpPower = humanoid.JumpPower
+				humanoid.JumpPower = 0
+				AppliedEvents["No Jumping"] = {
+					reset = function()
+						humanoid.JumpPower = originalJumpPower
+					end
+				}
+			end
+		end
+	},
+	{
+		name = "Low Gravity",
+		duration = 15,
+		effect = function(character)
+		local originalGravity = workspace.Gravity
+		workspace.Gravity = 10
+		AppliedEvents["Low Gravity"] = {
+			reset = function()
+				workspace.Gravity = originalGravity
+				end
+				}
+			end
+	},
+	{
 		name = "Big Character",
 		duration = 20,
 		effect = function(character)
